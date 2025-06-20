@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EventController as AdminEventController;
 use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\Admin\OrganizerController;
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
@@ -25,10 +26,16 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/events', [EventController::class, 'index'])->name('events.index');
 Route::get('/events/{slug}', [EventController::class, 'show'])->name('events.show');
 
+// Маршруты аутентификации
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [LoginController::class, 'login']);
+});
+
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
+
 // Административные маршруты
-Route::prefix('admin')->name('admin.')->group(function () {
-    // В будущем здесь будет аутентификация middleware('auth')
-    
+Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     
     // Маршруты для управления категориями

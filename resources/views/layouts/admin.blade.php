@@ -34,9 +34,13 @@
                 </a>
             </nav>
             <div class="absolute bottom-0 w-full p-6">
-                <a href="{{ route('home') }}" class="flex items-center text-gray-300 hover:text-white">
+                <a href="{{ route('home') }}" class="flex items-center text-gray-300 hover:text-white mb-4">
                     <span class="mx-3">Перейти на сайт</span>
                 </a>
+                <form method="POST" action="{{ route('logout') }}" class="mx-3">
+                    @csrf
+                    <button type="submit" class="text-gray-300 hover:text-white">Выйти</button>
+                </form>
             </div>
         </aside>
 
@@ -44,8 +48,17 @@
         <div class="ml-64 w-full">
             <!-- Верхняя панель -->
             <header class="bg-white shadow">
-                <div class="px-6 py-4">
+                <div class="px-6 py-4 flex justify-between items-center">
                     <h1 class="text-2xl font-semibold text-gray-900">@yield('title', 'Панель управления')</h1>
+                    <div class="flex items-center">
+                        <span class="text-gray-700 mr-4">{{ Auth::user()->name }}</span>
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit" class="bg-red-500 hover:bg-red-700 text-white px-3 py-1 rounded text-sm">
+                                Выйти
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </header>
 

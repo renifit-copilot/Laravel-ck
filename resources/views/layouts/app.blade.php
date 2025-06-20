@@ -14,9 +14,20 @@
             <div>
                 <a href="{{ route('home') }}" class="text-2xl font-bold text-blue-600">EventHub</a>
             </div>
-            <div class="space-x-4">
+            <div class="space-x-4 flex items-center">
                 <a href="{{ route('events.index') }}" class="text-gray-700 hover:text-blue-600">Мероприятия</a>
-                <a href="{{ route('admin.dashboard') }}" class="text-gray-700 hover:text-blue-600">Админ-панель</a>
+                
+                @auth
+                    <a href="{{ route('admin.dashboard') }}" class="text-gray-700 hover:text-blue-600">Админ-панель</a>
+                    <span class="text-gray-700 mx-2">|</span>
+                    <span class="text-gray-700">{{ Auth::user()->name }}</span>
+                    <form method="POST" action="{{ route('logout') }}" class="inline ml-4">
+                        @csrf
+                        <button type="submit" class="text-gray-700 hover:text-red-600">Выйти</button>
+                    </form>
+                @else
+                    <a href="{{ route('login') }}" class="text-gray-700 hover:text-blue-600">Войти</a>
+                @endauth
             </div>
         </nav>
     </header>
