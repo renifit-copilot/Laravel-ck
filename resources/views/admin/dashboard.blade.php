@@ -3,6 +3,7 @@
 @section('title', 'Панель управления')
 
 @section('content')
+    {{-- Здесь выводим общую статистику проекта в виде карточек --}}
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div class="bg-white rounded-lg shadow p-6">
             <h3 class="text-lg font-semibold text-gray-700">Всего мероприятий</h3>
@@ -45,6 +46,29 @@
         </div>
     </div>
 
+    {{-- TODO: Добавить график статистики по месяцам --}}
+    
+    {{-- Тут будет и статистика по статусам (если передана в контроллере) --}}
+    @if(isset($eventsStatusCount))
+    <div class="bg-white rounded-lg shadow p-6 mb-6">
+        <h3 class="text-lg font-semibold text-gray-700 mb-4">Статистика по статусам</h3>
+        <div class="flex space-x-4">
+            <div class="bg-green-100 p-3 rounded flex-1 text-center">
+                <p class="text-green-800 font-bold text-xl">{{ $eventsStatusCount['published'] }}</p>
+                <p class="text-green-700">Опубликовано</p>
+            </div>
+            <div class="bg-yellow-100 p-3 rounded flex-1 text-center">
+                <p class="text-yellow-800 font-bold text-xl">{{ $eventsStatusCount['draft'] }}</p>
+                <p class="text-yellow-700">Черновики</p>
+            </div>
+            <div class="bg-red-100 p-3 rounded flex-1 text-center">
+                <p class="text-red-800 font-bold text-xl">{{ $eventsStatusCount['cancelled'] }}</p>
+                <p class="text-red-700">Отменено</p>
+            </div>
+        </div>
+    </div>
+    @endif
+
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Последние мероприятия -->
         <div class="bg-white rounded-lg shadow">
@@ -71,6 +95,7 @@
                                             </a>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
+                                            {{-- Можно было бы использовать метод из модели: $event->formattedDate() --}}
                                             {{ $event->start_date->format('d.m.Y H:i') }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
@@ -123,4 +148,10 @@
             </div>
         </div>
     </div>
-@endsection 
+    
+    {{-- 
+    Здесь можно было бы добавить еще один блок со статистикой
+    по посещаемости страниц и популярным мероприятиям, но это
+    потребует дополнительной таблицы в БД для хранения счетчика просмотров.
+    --}}
+@endsection

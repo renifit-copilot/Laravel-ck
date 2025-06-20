@@ -10,19 +10,24 @@ use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
+    // TODO: Добавить кеширование популярных запросов
+    
     /**
      * Показать главную страницу.
+     * 
+     * @return \Illuminate\View\View
      */
     public function index()
     {
         // Получить рекомендуемые мероприятия (опубликованные и ближайшие по дате)
-        $featuredEvents = Event::where('status', 'published')
-            ->where('start_date', '>=', now())
+        $featured_events = Event::where('status', 'published')
+            ->where('start_date', '>=', now()) // Убедимся что не показываем прошедшие события
             ->orderBy('start_date')
-            ->take(6)
+            ->take(6) // Берем только 6 событий, чтобы страница не была перегружена
             ->get();
 
         // Получить категории с количеством мероприятий
+        // Используем withCount - это круто, лучше чем делать count в цикле!
         $categories = Category::withCount(['events' => function($query) {
             $query->where('status', 'published');
         }])
@@ -37,7 +42,13 @@ class HomeController extends Controller
             ->orderBy('events_count', 'desc')
             ->take(5)
             ->get();
-
-        return view('home', compact('featuredEvents', 'categories', 'locations'));
+        
+        // Вернуть представление с данными
+        // compact создает массив из переменных - очень удобно!
+        return view('home', [
+            'featuredEvents' => $featured_events, 
+            'categories' => $categories, 
+            'locations' => $locations
+        ]);
     }
 }
